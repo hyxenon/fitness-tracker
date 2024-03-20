@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { register } from "@/actions/register";
 
 const formSchema = z
   .object({
@@ -42,7 +43,9 @@ const RegisterForm = () => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(JSON.stringify(values));
+    register(values).then((data) => {
+      console.log(data.message);
+    });
   };
   return (
     <Form {...form}>
