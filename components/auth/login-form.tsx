@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 
-import React from "react";
+import React, { useState, useTransition } from "react";
 import {
   Form,
   FormControl,
@@ -15,23 +15,30 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-
-const formSchema = z.object({
-  email: z.string().email({ message: "Email is required" }),
-  password: z.string().min(1, { message: "Password is required." }),
-});
+import { login } from "@/actions/login";
+import { FormError } from "../form-error";
+import { LoginSchema } from "@/models/models";
 
 const LoginForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(JSON.stringify(values));
+  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    setError("");
+    setSuccess("");
+    startTransition(() => {
+      login(values).then((data) => {
+        setError(data?.error);
+      });
+    });
   };
   return (
     <Form {...form}>
@@ -64,7 +71,8 @@ const LoginForm = () => {
             )}
           />
         </div>
-        <Button className="w-full" type="submit">
+        <FormError message={error} />
+        <Button disabled={isPending} className="w-full" type="submit">
           Login
         </Button>
       </form>

@@ -1,7 +1,9 @@
 "use server";
+import { getUserByEmail } from "@/data/user";
 import { db } from "@/lib/db";
-import { registerSchema } from "@/models/models";
+import { RegisterSchema, registerSchema } from "@/models/models";
 import bcrypt from "bcryptjs";
+import * as z from "zod";
 
 function titleCase(str: string) {
   return str
@@ -11,29 +13,29 @@ function titleCase(str: string) {
     .join(" ");
 }
 
-export const register = async (values: registerSchema) => {
-  const existingUser = await db.user.findUnique({
-    where: {
-      email: values.email,
+export const register = async (values: z.infer<typeof RegisterSchema>) => {
+  const validatedFields = RegisterSchema.safeParse(values);
+  if (!validatedFields.success) {
+    return { error: "Invalid fields" };
+  }
+
+  const { email, password, firstName, lastName } = validatedFields.data;
+
+  const existingUser = await getUserByEmail(email);
+
+  if (existingUser) {
+    return { error: "Email already in use!" };
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await db.user.create({
+    data: {
+      name: titleCase(`${firstName} ${lastName}`),
+      email: email,
+      password: hashedPassword,
     },
   });
-  try {
-    if (existingUser) {
-      return { message: "Existing Email" };
-    }
 
-    const hashedPassword = await bcrypt.hash(values.password, 10);
-
-    const user = await db.user.create({
-      data: {
-        name: titleCase(`${values.firstName} ${values.lastName}`),
-        email: values.email,
-        password: hashedPassword,
-      },
-    });
-
-    return { message: "User Created" };
-  } catch (error) {
-    return { err: "Something went wrong." };
-  }
+  return { success: "User Created" };
 };

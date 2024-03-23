@@ -13,6 +13,8 @@ import {
 } from "../ui/sheet";
 import { ModeToggle } from "../ui/mode-toggle";
 import { usePathname } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import ProfileIcon from "./profileIcon";
 
 const routes = [
   {
@@ -20,16 +22,16 @@ const routes = [
     href: "/",
   },
   {
-    label: "About",
-    href: "/",
+    label: "Users",
+    href: "/teacher/users",
   },
   {
     label: "Schools",
-    href: "/",
+    href: "/schools",
   },
 ];
 
-const Navbar = () => {
+const Navbar = ({ session }: { session: any }) => {
   const pathname = usePathname();
 
   if (pathname === "/login" || pathname === "/register") {
@@ -37,7 +39,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="flex px-4 py-6 border-b items-center">
+    <nav className="flex px-4 lg:px-12 py-6 border-b items-center">
       <Sheet>
         <SheetTrigger asChild>
           <Button className="flex lg:hidden" variant="ghost" size={"icon"}>
@@ -67,16 +69,20 @@ const Navbar = () => {
       </div>
       <div className="hidden lg:flex">
         {routes.map((link, index) => (
-          <Button variant="link" key={index}>
-            <Link href={link.href}>{link.label}</Link>
-          </Button>
+          <Link key={index} href={link.href}>
+            <Button variant="link">{link.label}</Button>
+          </Link>
         ))}
       </div>
       <div className="ml-auto flex items-center space-x-4">
-        <Button>
-          <Link href={"/login"}>Login</Link>
-        </Button>
         <ModeToggle />
+        {session == null ? (
+          <Link href={"/login"}>
+            <Button>Login</Button>
+          </Link>
+        ) : (
+          <ProfileIcon />
+        )}
       </div>
     </nav>
   );

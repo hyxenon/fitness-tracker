@@ -1,5 +1,5 @@
 import RegisterForm from "@/components/auth/regiser-form";
-import AuthFormWrapper from "@/components/ui/auth-form-wrapper";
+import AuthFormWrapper from "@/components/auth/auth-form-wrapper";
 import React from "react";
 
 const RegisterPage = () => {

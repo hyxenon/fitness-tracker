@@ -6,14 +6,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./card";
-import { Button } from "./button";
+} from "../ui/card";
+import { Button } from "../ui/button";
+import Social from "./Social";
 
 type AuthFormWrapperProps = {
   children: React.ReactNode;
   title: string;
   backBtnRef: string;
   backBtnLabel: string;
+  social?: boolean;
 };
 
 const AuthFormWrapper = ({
@@ -21,6 +23,7 @@ const AuthFormWrapper = ({
   title,
   backBtnRef,
   backBtnLabel,
+  social,
 }: AuthFormWrapperProps) => {
   return (
     <Card className="w-full max-w-[400px] px-4 py-8">
@@ -35,7 +38,8 @@ const AuthFormWrapper = ({
         </CardTitle>
       </CardHeader>
       <CardContent>{children}</CardContent>
-      <CardFooter>
+      <CardFooter className="flex flex-col gap-y-2">
+        {social && <Social />}
         <Button variant="link" className="mx-auto">
           <Link href={backBtnRef}>{backBtnLabel}</Link>
         </Button>
