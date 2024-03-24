@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { CiLogout } from "react-icons/ci";
+import { signOut } from "next-auth/react";
 
 const ProfileIcon = () => {
   return (
@@ -24,7 +25,10 @@ const ProfileIcon = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem>Profile</DropdownMenuItem>
         <DropdownMenuItem>
-          <div className="flex items-center justify-between w-full">
+          <div
+            onClick={() => signOut()}
+            className="flex items-center justify-between w-full"
+          >
             Log Out <CiLogout color="red" />
           </div>
         </DropdownMenuItem>
