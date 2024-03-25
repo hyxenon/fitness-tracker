@@ -11,12 +11,19 @@ import {
 import { CiLogout } from "react-icons/ci";
 import { signOut } from "next-auth/react";
 
-const ProfileIcon = () => {
+type ProfileIconProps = {
+  profileImg: string;
+};
+
+const ProfileIcon = ({ profileImg }: ProfileIconProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+          <AvatarImage
+            src={profileImg ? profileImg : "https://github.com/shadcn.png"}
+            alt="@shadcn"
+          />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

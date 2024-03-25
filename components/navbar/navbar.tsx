@@ -13,7 +13,6 @@ import {
 } from "../ui/sheet";
 import { ModeToggle } from "../ui/mode-toggle";
 import { usePathname } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import ProfileIcon from "./profileIcon";
 
 const routes = [
@@ -81,7 +80,7 @@ const Navbar = ({ session }: { session: any }) => {
             <Button>Login</Button>
           </Link>
         ) : (
-          <ProfileIcon />
+          <ProfileIcon profileImg={session.user.image} />
         )}
       </div>
     </nav>
