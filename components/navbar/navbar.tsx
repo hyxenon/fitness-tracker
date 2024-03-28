@@ -33,7 +33,12 @@ const routes = [
 const Navbar = ({ session }: { session: any }) => {
   const pathname = usePathname();
 
-  if (pathname === "/login" || pathname === "/register") {
+  if (
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/new-verification" ||
+    pathname === "/reset-password"
+  ) {
     return;
   }
 
