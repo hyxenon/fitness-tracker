@@ -1,19 +1,19 @@
-import RegisterForm from "@/components/auth/regiser-form";
 import AuthFormWrapper from "@/components/auth/auth-form-wrapper";
+import ResetForm from "@/components/auth/reset-form";
 import React from "react";
 
-const RegisterPage = () => {
+const ResetPage = () => {
   return (
     <div className="flex items-center justify-center py-8 px-4">
       <AuthFormWrapper
-        title="Register"
+        title="Forgot your password?"
+        backBtnLabel="Back to login"
         backBtnRef="/login"
-        backBtnLabel="Already have an account? Log in here"
       >
-        <RegisterForm />
+        <ResetForm />
       </AuthFormWrapper>
     </div>
   );
 };
 
-export default RegisterPage;
+export default ResetPage;

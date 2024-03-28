@@ -15,35 +15,33 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { login } from "@/actions/login";
-import { FormError } from "../form-error";
-import { LoginSchema } from "@/models/models";
-import { useSearchParams } from "next/navigation";
+import { NewPasswordSchema, ResetSchema } from "@/models/models";
 import { FormSuccess } from "../form-success";
-import Link from "next/link";
 
-const LoginForm = () => {
+import { FormError } from "../form-error";
+import { useSearchParams } from "next/navigation";
+import { newPassword } from "@/actions/new-password";
+
+const NewPasswordForm = () => {
   const searchParams = useSearchParams();
-  const urlError =
-    searchParams.get("error") === "OAuthAccountNotLinked"
-      ? "Email already in use with different provider!"
-      : "";
+  const token = searchParams.get("token");
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+
+  const form = useForm<z.infer<typeof NewPasswordSchema>>({
+    resolver: zodResolver(NewPasswordSchema),
     defaultValues: {
-      email: "",
       password: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
     setError("");
     setSuccess("");
+
     startTransition(() => {
-      login(values).then((data) => {
+      newPassword(values, token).then((data) => {
         setError(data?.error);
         setSuccess(data?.success);
       });
@@ -55,47 +53,26 @@ const LoginForm = () => {
         <div className="space-y-4">
           <FormField
             control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input {...field} type="email" placeholder="" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input {...field} type="password" />
+                  <Input {...field} type="password" placeholder="******" />
                 </FormControl>
-                <Button
-                  size={"sm"}
-                  variant={"link"}
-                  asChild
-                  className="px-0 font-normal"
-                >
-                  <Link href={"/reset-password"}>Forgot password?</Link>
-                </Button>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <FormError message={error || urlError} />
+        <FormError message={error} />
         <FormSuccess message={success} />
         <Button disabled={isPending} className="w-full" type="submit">
-          Login
+          Reset password
         </Button>
       </form>
     </Form>
   );
 };
 
-export default LoginForm;
+export default NewPasswordForm;
